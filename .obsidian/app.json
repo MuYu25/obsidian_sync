@@ -1,5 +1,6 @@
 {
   "strictLineBreaks": false,
-  "vimMode": false,
-  "newLinkFormat": "relative"
+  "vimMode": true,
+  "newLinkFormat": "relative",
+  "showLineNumber": true
 }
