@@ -175,3 +175,9 @@ START SLAVE;
 SHOW SLAVE STATUS\G
 ```
 
+#### 检查验证
+
+在 Slave 上执行 `SHOW SLAVE STATUS\G` 后，重点检查以下两项：
+- `Slave_IO_Running`: **Yes**
+- `Slave_SQL_Running`: **Yes**
+- `Seconds_Behind_Master`: **0** 或一个非常小的数字
