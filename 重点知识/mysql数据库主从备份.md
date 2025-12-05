@@ -161,6 +161,7 @@ STOP SLAVE;
 
 -- 2. 配置 Master 连接信息 -- 替换 MasterLogFile 和 MasterLogPos 为你在 Master 上查到的值 
 CHANGE MASTER TO MASTER_HOST='mysql-server-master', -- Master 容器的服务名（通过 Docker 网络互通） 
+-- 若不是使用docker network进行链接，则需要使用 **Master 宿主机 A 的实际 IP 地址**。
 MASTER_USER='repl_user', MASTER_PASSWORD='your_replication_password', MASTER_LOG_FILE='binglog.000004', -- 替换为 Master 的 File
 MASTER_LOG_POS=836, -- 替换为 Master 的 Position
 GET_MASTER_PUBLIC_KEY=1;
@@ -265,6 +266,7 @@ sudo docker exec -it mysql-server-slave mysql -u root -p123456
 ```SQL
 CHANGE MASTER TO 
   MASTER_HOST='mysql-server-master',
+-- 若不是使用docker network进行链接，则需要使用 **Master 宿主机 A 的实际 IP 地址**。
   MASTER_USER='repl_user',
   MASTER_PASSWORD='YOUR_NEW_PASSWORD',  -- <<< 使用新密码
   MASTER_LOG_FILE='binlog.000003',      -- 确保 File 和 Pos 正确
