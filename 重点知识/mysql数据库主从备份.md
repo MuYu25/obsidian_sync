@@ -181,3 +181,100 @@ SHOW SLAVE STATUS\G
 - `Slave_IO_Running`: **Yes**
 - `Slave_SQL_Running`: **Yes**
 - `Seconds_Behind_Master`: **0** 或一个非常小的数字
+若结果如上所示，那么恭喜，已经设置完成
+# 问题排查
+## 同步失败
+```bash
+Slave_IO_Running: Connecting
+Slave_SQL_Running: Yes
+Seconds_Behind_Master: NULL
+```
+### 可能情况1 docker network
+两个容器不在同一个`docker network`中，排查方法
+```bash
+sudo docker network ls
+```
+查看`docker compose`中自己创建相同名称的`network`。我的如下:
+```bash
+sudo docker network ls
+NETWORK ID     NAME                   DRIVER    SCOPE
+1e09fb29ff2e   bridge                 bridge    local
+9027af43c605   hl202417_app-network   bridge    local
+60e6709c7708   host                   host      local
+f03b49ba2da7   none                   null      local
+```
+依旧经验而谈，我锁定了`hl202417_app-network`
+```bash
+sudo docker network inspect hl202417_app-network
+```
+```json
+"Containers": {
+            "80af39073a647a6f9ea9379c29d18692b97c4a24d9786898b306af55d281dbee": {
+                "Name": "mysql-server-master",
+                "EndpointID": "d2cedd2f0f31df68a934f236e2e70b985348893874b8e40c35162ba2975c38ae",
+                "MacAddress": "12:b0:04:01:a9:2f",
+                "IPv4Address": "172.18.0.5/16",
+                "IPv6Address": ""
+            },
+            "919f81debfbaa6c6f21fbad892d809d4bb6a80e56a955732b8d8ff29908295a9": {
+                "Name": "mysql-server-slave",
+                "EndpointID": "6bfa629ef08f072ec0d3f085e3dff4cfb284ddf58815ad83477531b22b062992",
+                "MacAddress": "1e:11:7c:97:0f:35",
+                "IPv4Address": "172.18.0.3/16",
+                "IPv6Address": ""
+            }
+		}
+```
+我在网络中发现 `master`与`slave` 处于统一网络下。故此问题不存在.
+
+若发现`master`或`slave`不在`docker compose`所设置的网路中，请修改 `docker compose`文件.
+### 可能情况2  master下用于同步的账户权限不足或用户不存在(我遇到的情况)
+我是再执行了一下在`master`上创建账户的流程
+#### master流程
+```bash
+sudo docker exec -it mysql-server-master mysql -u root -p123456
+```
+修改密码并且修改权限:
+```SQL
+-- 1. 确保用户使用兼容的认证插件并设置新密码（使用您想要的密码替换 'YOUR_NEW_PASSWORD'）
+ALTER USER 'repl_user'@'%' IDENTIFIED WITH mysql_native_password BY 'YOUR_NEW_PASSWORD';
+
+-- 2. 确保用户有正确的复制权限
+GRANT REPLICATION SLAVE ON *.* TO 'repl_user'@'%';
+
+-- 3. 刷新权限
+FLUSH PRIVILEGES;
+
+-- 4. 退出 Master 客户端
+QUIT;
+```
+记录同步点:
+```SQL
+-- 4. 锁定表（防止数据变动影响同步点）
+FLUSH TABLES WITH READ LOCK;
+
+-- 5. 查看 Master 状态
+SHOW MASTER STATUS;
+```
+#### slave流程
+进入容器:
+```bash
+sudo docker exec -it mysql-server-slave mysql -u root -p123456
+```
+**重新配置 Master 连接：** 确保密码正确，并使用正确的日志点。
+```SQL
+CHANGE MASTER TO 
+  MASTER_HOST='mysql-server-master',
+  MASTER_USER='repl_user',
+  MASTER_PASSWORD='YOUR_NEW_PASSWORD',  -- <<< 使用新密码
+  MASTER_LOG_FILE='binlog.000003',      -- 确保 File 和 Pos 正确
+  MASTER_LOG_POS=324,
+  GET_MASTER_PUBLIC_KEY=1;
+```
+启动复制并且验证：
+```SQL
+START REPLICA;
+
+SHOW SLAVE STATUS\G
+```
+确认 `Slave_IO_Running: Yes` 和 `Slave_SQL_Running: Yes`。
