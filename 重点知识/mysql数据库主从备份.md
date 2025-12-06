@@ -283,3 +283,17 @@ SHOW SLAVE STATUS\G
 ## 添加多线程的数据复制
 ### slave设置
 slave.cnf
+```bash
+[mysqld]
+server-id               = 2                 # 唯一 ID，不能与 Master 相同
+replicate_do_db         = mydb     # 可选：只复制特定数据库
+skip_slave_start        = 1                 # 防止启动时自动开启复制
+bind-address            = 0.0.0.0
+slave_parallel_type     = LOGICAL_CLOCK     # 基于逻辑时钟并行应用事务
+slave_parallel_workers  = 32                # 设置并行工作线程数，通常设置为CPU核心数的2倍
+```
+新增
+```
+slave_parallel_type     = LOGICAL_CLOCK     # 基于逻辑时钟并行应用事务
+slave_parallel_workers  = 32                # 设置并行工作线程数，通常设置为CPU核心数的2倍
+```
