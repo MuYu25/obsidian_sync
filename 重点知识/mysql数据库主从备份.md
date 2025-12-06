@@ -310,3 +310,8 @@ SHOW GLOBAL VARIABLES LIKE 'slave_parallel_type';
 **预期结果：**
 - `Variable_name`: `slave_parallel_type`
 - `Value`: **LOGICAL_CLOCK**
+```SQL
+SHOW PROCESSLIST;
+```
+**预期结果：**
+您应该能看到多个进程，其 `Command` 字段显示为 **`Slave_worker`** 或 `Replica_worker`。进程的数量应该与您设置的 `slave_parallel_workers` (即 32 个) 接近。
