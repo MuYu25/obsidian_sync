@@ -280,8 +280,8 @@ START REPLICA;
 SHOW SLAVE STATUS\G
 ```
 确认 `Slave_IO_Running: Yes` 和 `Slave_SQL_Running: Yes`。
-## 添加多线程的数据复制
-### slave设置
+# 添加多线程的数据复制
+## slave设置
 slave.cnf
 ```bash
 [mysqld]
@@ -297,4 +297,17 @@ slave_parallel_workers  = 32                # 设置并行工作线程数，通�
 slave_parallel_type     = LOGICAL_CLOCK     # 基于逻辑时钟并行应用事务
 slave_parallel_workers  = 32                # 设置并行工作线程数，通常设置为CPU核心数的2倍
 ```
-### 检查多线程工作状态
+## 检查多线程工作状态
+```SQL
+SHOW GLOBAL VARIABLES LIKE 'slave_parallel_workers'; --显示当前 Slave 实例实际运行的并行线程数 
+```
+**预期结果：**
+- `Variable_name`: `slave_parallel_workers`
+- `Value`: **32** (或者您在配置文件中设置的任何值)
+```SQL
+**预期结果：**
+
+- `Variable_name`: `slave_parallel_workers`
+    
+- `Value`: **8** (或者您在配置文件中设置的任何值)
+```
