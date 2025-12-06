@@ -297,3 +297,4 @@ slave_parallel_workers  = 32                # 设置并行工作线程数，通�
 slave_parallel_type     = LOGICAL_CLOCK     # 基于逻辑时钟并行应用事务
 slave_parallel_workers  = 32                # 设置并行工作线程数，通常设置为CPU核心数的2倍
 ```
+### 检查多线程工作状态
