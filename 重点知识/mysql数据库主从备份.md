@@ -280,3 +280,6 @@ START REPLICA;
 SHOW SLAVE STATUS\G
 ```
 确认 `Slave_IO_Running: Yes` 和 `Slave_SQL_Running: Yes`。
+## 添加多线程的数据复制
+### slave设置
+slave.cnf
