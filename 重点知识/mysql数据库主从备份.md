@@ -305,9 +305,8 @@ SHOW GLOBAL VARIABLES LIKE 'slave_parallel_workers'; --显示当前 Slave 实例
 - `Variable_name`: `slave_parallel_workers`
 - `Value`: **32** (或者您在配置文件中设置的任何值)
 ```SQL
-**预期结果：**
-
-- `Variable_name`: `slave_parallel_workers`
-    
-- `Value`: **8** (或者您在配置文件中设置的任何值)
+SHOW GLOBAL VARIABLES LIKE 'slave_parallel_type';
 ```
+**预期结果：**
+- `Variable_name`: `slave_parallel_type`
+- `Value`: **LOGICAL_CLOCK**
