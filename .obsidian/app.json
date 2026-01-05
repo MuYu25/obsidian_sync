@@ -3,5 +3,6 @@
   "vimMode": true,
   "newLinkFormat": "relative",
   "showLineNumber": true,
-  "useMarkdownLinks": true
+  "useMarkdownLinks": true,
+  "readableLineLength": true
 }
