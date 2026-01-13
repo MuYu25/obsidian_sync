@@ -25,7 +25,7 @@ transport.tcpMux = true
 name = "test-tcp"
 type = "tcp"
 # localIP = "127.0.0.1"
-localPort = 8000
-remotePort = 7001
-# customDomains = ['www']
+localPort = 8000    # ben'di
+remotePort = 7001   # 远程访问的地址远程ip:{{remotePort}}+path访问本地服务
+# customDomains = ['www.xxx.com'] # http穿透需要填写域名
 ```
