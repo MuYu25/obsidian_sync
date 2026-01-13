@@ -16,16 +16,16 @@ webServer.password = "xxxx"
 # client
 frpc.toml
 ```toml
-serverAddr = "120.24.184.83"
+serverAddr = "xxxxxx"   # 远程ip地址
 serverPort = 7000
-auth.token = "Abc12345"
+auth.token = "xxxxx"    # 连接的token
 transport.tcpMux = true
 
 [[proxies]]
 name = "test-tcp"
-type = "tcp"
+type = "tcp"        # 类型，tcp，htttp，https
 # localIP = "127.0.0.1"
-localPort = 8000    # ben'di
+localPort = 8000    # 本地服务的实际地址
 remotePort = 7001   # 远程访问的地址远程ip:{{remotePort}}+path访问本地服务
 # customDomains = ['www.xxx.com'] # http穿透需要填写域名
 ```
