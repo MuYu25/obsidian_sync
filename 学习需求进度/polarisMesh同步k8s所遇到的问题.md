@@ -1,1 +1,1 @@
-docker compose中跑
+polarisMesh中没有修改的`polaris-server`地址是有问题的，需要自己手动设置ip 才行，
