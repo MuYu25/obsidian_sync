@@ -19,7 +19,7 @@ created by k8s.io/client-go/tools/leaderelection.(*LeaderElector).Run in gorouti
 	/home/runner/go/pkg/mod/k8s.io/client-go@v0.27.3/tools/leaderelection/leaderelection.go:208 +0xf6
 ```
 上诉问题解决一半，polaris-controller状态已经同步到polaris-console中
-- [ ]  `controller`同步pod状态到`polaris-console`,出现错误，26-06-22 23：08记，明日解决
+- [x]  `controller`同步pod状态到`polaris-console`,出现错误，26-06-22 23：08记，明日解决
     ```bash
     W0622 22:57:29.161545       1 warnings.go:70] v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
 W0622 22:57:29.165533       1 warnings.go:70] v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
