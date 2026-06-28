@@ -68,3 +68,16 @@ kubectl exec -it polaris-controller-polaris-controller-0 -n polaris-system -- ca
 CPU亲和性：`0-31`
 - **致命发现**：Pod被允许使用所有32个核心（0-31），**没有绑定到特定核心**
 - 这排除了K8s CPU Manager静态绑定的嫌疑
+
+## 是什么问题
+真正的原因：GOMAXPROCS 导致的问题
+polaris-controller 是一个Go语言编写的服务（腾讯开源的服务治理组件）。
+Go的默认行为：Go运行时默认使用 GOMAXPROCS = 机器CPU核心数（即32），即使Pod只有2核限制。
+后果：
+Go调度器创建了32个P（处理器上下文）
+但Linux cgroup只允许Pod使用2核的CPU时间
+Go的调度器会在32个P之间频繁切换和自旋，试图利用"不存在的核心"
+导致某个核心被Go的runtime抢占式调度打满，而其他核心空闲
+这就是为什么你看到单核100%，但总使用率只有45%的原因。
+## 解决办法
+此处使用时`helm`部署的
