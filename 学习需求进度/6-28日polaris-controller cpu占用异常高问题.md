@@ -1,7 +1,7 @@
 # 异常情况
 `top P`中的表现, `cpu`温度常驻`90`度
 ![](assets/6-28日polaris-controller%20cpu占用异常高问题/file-20260628222702675.png)
-`htop`中表现为CPU单核占用非常高，其他摸鱼
+`htop`中表现为CPU单核占用非常高，其他摸鱼jj2
 
 # 排查情况
 ##  查看Pod的CPU配额限制
